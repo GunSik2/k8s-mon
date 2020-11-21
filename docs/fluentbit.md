@@ -34,7 +34,7 @@ Fluent Bit v1.6.5
 [2020/11/21 07:21:12] [ info] [sp] stream processor started
 [0] cpu.0: [1605943273.156827976, {"cpu_p"=>0.250000, "user_p"=>0.000000, "system_p"=>0.250000, "cpu0.p_cpu"=>0.000000, "cpu0.p_user"=>0.000000, "cpu0.p_system"=>0.000000, "cpu1.p_cpu"=>0.000000, "cpu1.p_user"=>0.000000, "cpu1.p_system"=>0.000000, "cpu2.p_cpu"=>0.000000, "cpu2.p_user"=>0.000000, "cpu2.p_system"=>0.000000, "cpu3.p_cpu"=>0.000000, "cpu3.p_user"=>0.000000, "cpu3.p_system"=>0.000000}]
 ```
-- fluentbit & elasticsearch
+- fluentbit with [elasticsearch output](https://fluentbit.io/documentation/0.14/output/elasticsearch.html)
 ```
 $ cat fluent-bit.conf 
 [INPUT]
@@ -73,6 +73,22 @@ $ docker-compose up
 $ docker-compose ps
 $ docker-compose stop
 $ docker-compose down
+```
+
+- fluentbit 설정 사례
+```
+$ cat fluent-bit.conf 
+[INPUT]
+    Name  cpu
+    Tag   cpu
+
+[OUTPUT]
+    Name  es
+    Match *
+    Host  192.168.2.3
+    Port  9200
+    Index my_index
+    Type  my_type
 ```
 
 ## 참고
