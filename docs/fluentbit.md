@@ -17,7 +17,7 @@
 
 ## 시험
 - [docker & docker-compose](docker-compose.md) 준비
-- fluentbit
+- fluentbit input cpu with stdout
 ```
 $ sudo docker run -it fluent/fluent-bit /fluent-bit/bin/fluent-bit -i cpu -o stdout -f 1
 
@@ -34,7 +34,7 @@ Fluent Bit v1.6.5
 [2020/11/21 07:21:12] [ info] [sp] stream processor started
 [0] cpu.0: [1605943273.156827976, {"cpu_p"=>0.250000, "user_p"=>0.000000, "system_p"=>0.250000, "cpu0.p_cpu"=>0.000000, "cpu0.p_user"=>0.000000, "cpu0.p_system"=>0.000000, "cpu1.p_cpu"=>0.000000, "cpu1.p_user"=>0.000000, "cpu1.p_system"=>0.000000, "cpu2.p_cpu"=>0.000000, "cpu2.p_user"=>0.000000, "cpu2.p_system"=>0.000000, "cpu3.p_cpu"=>0.000000, "cpu3.p_user"=>0.000000, "cpu3.p_system"=>0.000000}]
 ```
-- fluentbit with [elasticsearch output](https://fluentbit.io/documentation/0.14/output/elasticsearch.html)
+- fluentbit [dummy input](https://docs.fluentbit.io/manual/pipeline/inputs/dummy) with [elasticsearch output](https://fluentbit.io/documentation/0.14/output/elasticsearch.html)
 ```
 $ cat fluent-bit.conf 
 [INPUT]
@@ -77,7 +77,7 @@ $ docker-compose down
 
 - fluentbit 설정 사례
 ```
-$ cat fluent-bit.conf 
+$ cat fluent-bit.conf   # fluent-bit -i cpu -t cpu -o es://192.168.2.3:9200/my_index/my_type -o stdout -m '*'
 [INPUT]
     Name  cpu
     Tag   cpu
@@ -89,6 +89,15 @@ $ cat fluent-bit.conf
     Port  9200
     Index my_index
     Type  my_type
+    
+$ cat fluent-bit.conf     # fluent-bit -i dummy -o stdout
+[INPUT]
+    Name   dummy
+    Tag    dummy.log
+
+[OUTPUT]
+    Name   stdout
+    Match  *    
 ```
 
 ## 참고
