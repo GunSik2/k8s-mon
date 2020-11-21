@@ -5,6 +5,7 @@
 - 로그 표준화 및 json 전환
 - 로그 캐싱(파일, 메모리) 및 라우팅
 - 플러그인 (input / filter / output)
+- 모니터링 (json / prometheus metric) HTTP 서비스 제공
 - Fluentbit 은 fluentd 경량 버전
 
 ## 개념
