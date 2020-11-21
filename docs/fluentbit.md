@@ -75,7 +75,8 @@ $ docker-compose stop
 $ docker-compose down
 ```
 
-- fluentbit 설정 사례
+## fluentbit 설정 사례
+- cpu & elastic search
 ```
 $ cat fluent-bit.conf   # fluent-bit -i cpu -t cpu -o es://192.168.2.3:9200/my_index/my_type -o stdout -m '*'
 [INPUT]
@@ -89,7 +90,9 @@ $ cat fluent-bit.conf   # fluent-bit -i cpu -t cpu -o es://192.168.2.3:9200/my_i
     Port  9200
     Index my_index
     Type  my_type
-    
+```
+- dummy & stdout
+```
 $ cat fluent-bit.conf     # fluent-bit -i dummy -o stdout
 [INPUT]
     Name   dummy
@@ -98,6 +101,23 @@ $ cat fluent-bit.conf     # fluent-bit -i dummy -o stdout
 [OUTPUT]
     Name   stdout
     Match  *    
+```
+- monitoring
+```
+$ cat fluent-bit.conf 
+[SERVICE]
+    HTTP_Server  On
+    HTTP_Listen  0.0.0.0
+    HTTP_PORT    2020
+
+[INPUT]
+    Name cpu
+
+[OUTPUT]
+    Name  stdout
+    Match *
+    
+$ curl -s http://127.0.0.1:2020/api/v1/metrics/prometheus    
 ```
 
 ## 참고
