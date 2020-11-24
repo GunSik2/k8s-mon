@@ -49,6 +49,11 @@ alerting:
 notification:
     enabled: true
 ```
+- Network Policy 활성화
+```
+networkpolicy:
+    enabled: true 
+```
 - 적용 
 ```
 kubectl apply -f cluster-configuration.yaml    
