@@ -58,6 +58,7 @@ helm uninstall gitlab
 
 
 ## 참고자료
-- https://docs.gitlab.com/charts/quickstart/index.html
+- https://docs.gitlab.com/13.6/charts/installation/deployment.html
 - https://docs.gitlab.com/charts/
 - https://docs.gitlab.com/charts/charts/globals.html
+- https://speakerdeck.com/shkitayama/cd-with-rancher?slide=17
