@@ -33,9 +33,22 @@ $kubectl get secret gitlab-gitlab-initial-root-password -ojsonpath='{.data.passw
 
 - 설정 변경
 ```
-helm get values gitlab > gitlab.yaml
-// gitlab.yaml 변경
-helm upgrade gitlab gitlab/gitlab -f gitlab.yaml
+$ helm get values gitlab > gitlab.yaml
+
+$ cat gitlab.yaml #변경
+USER-SUPPLIED VALUES:
+certmanager-issuer:
+  email: gsikchoi@crossent.com
+global:
+  hosts:
+    domain: default.14.49.100.100.xip.io
+    https: false
+    registry:
+      servicePort: 8888
+    minio:
+      servicePort: 8888
+
+$ helm upgrade gitlab gitlab/gitlab -f gitlab.yaml
 ```
 
 - 삭제
@@ -47,3 +60,4 @@ helm uninstall gitlab
 ## 참고자료
 - https://docs.gitlab.com/charts/quickstart/index.html
 - https://docs.gitlab.com/charts/
+- https://docs.gitlab.com/charts/charts/globals.html
