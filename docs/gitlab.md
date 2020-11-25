@@ -31,5 +31,19 @@ gitlab-webservice  gitlab.domain.tld     35.239.27.235   80, 443   118m
 $kubectl get secret gitlab-gitlab-initial-root-password -ojsonpath='{.data.password}' | base64 --decode ; echo
 ```
 
+- 설정 변경
+```
+helm get values gitlab > gitlab.yaml
+// gitlab.yaml 변경
+helm upgrade gitlab gitlab/gitlab -f gitlab.yaml
+```
+
+- 삭제
+```
+helm uninstall gitlab
+```
+
+
 ## 참고자료
 - https://docs.gitlab.com/charts/quickstart/index.html
+- https://docs.gitlab.com/charts/
