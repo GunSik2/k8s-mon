@@ -62,6 +62,21 @@ virt-install \
 --disk path=/home/data/centos7-tp.qcow2,size=10,bus=virtio,format=qcow2
 ```
 
+## VM network config
+```
+# vi /etc/sysconfig/network-scripts/ifcfg-eth0
+TYPE=Ethernet
+NAME=eth0
+DEVICE=eth0
+ONBOOT=yes
+IPADDR=192.168.0.101
+PREFIX=24
+GATEWAY=192.168.0.1
+# sudo systemctl restart network
+# cat /etc/resolv.conf
+nameserver 8.8.8.8
+```
+
 
 ## VM Clone
 ```
