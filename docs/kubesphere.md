@@ -4,7 +4,9 @@
 
 ## Kubesphere 설치
 ```
-# sudo yum install -y socat conntrack ebtables ipset
+# sudo yum install -y socat conntrack ebtables ipset wget
+# wget https://github.com/kubesphere/kubekey/releases/download/v1.0.0/kubekey-v1.0.0-linux-amd64.tar.gz -O - | tar -xz
+# chmod +x kk
 # sudo ./kk create cluster --with-kubernetes v1.17.9 --with-kubesphere v3.0.0
 # mkdir ~/.kube && cp kubekey/config ~/.kube
 # kubectl logs -n kubesphere-system $(kubectl get pod -n kubesphere-system -l app=ks-install -o jsonpath='{.items[0].metadata.name}') -f
