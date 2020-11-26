@@ -13,9 +13,10 @@ kvm                   554609  1 kvm_intel
 irqbypass              13503  1 kvm
 # systemctl start libvirtd
 # systemctl enable libvirtd
+# virsh net-list
 # virsh net-destroy default
 ```
-## Bridge Config
+## Host Bridge Config
 ```
 # cat /etc/sysconfig/network-scripts/ifcfg-enp0s25 
 TYPE=Ethernet
@@ -44,65 +45,67 @@ br0		8000.28802300cc50	no		enp0s25
 
 ## VM Install
 ```
-wget http://ftp.kaist.ac.kr/CentOS/7.9.2009/isos/x86_64/CentOS-7-x86_64-Minimal-2009.iso
+mkdir /home/data/ && cd /home/data && chmod a+rwx /home/data -R
 
-mkdir /home/data/ && chmod a+rwx /home/data -R
-
-virt-install \
---virt-type kvm \
---name test \
---vcpus 1 \
---memory 2048 \
---os-variant debian8 \
---cdrom ./debian-8.10.0-i386-netinst.iso \
---network bridge=br0,model=virtio \
---boot cdrom,hd \
---graphics vnc,listen=0.0.0.0,password=choi \
---disk path=/home/data/test-vm.qcow2,size=10,format=qcow2 
-```
-
-## CentOS VNC
-```
-wget https://mirrors.kernel.org/centos/7.4.1708/isos/x86_64/CentOS-7-x86_64-Minimal-1708.iso
+wget http://ftp.kaist.ac.kr/CentOS/7.9.2009/isos/x86_64/CentOS-7-x86_64-DVD-2009.iso
 
 virt-install \
 --virt-type=kvm \
---name centos7 \
+--name centos7-tp \
 --vcpus=1 \
 --ram 2048 \
 --os-variant=centos7.0 \
---cdrom=./CentOS-7-x86_64-Minimal-2009.iso \
+--cdrom=./CentOS-7-x86_64-DVD-2009.iso \
 --network=bridge=br0,model=virtio \
 --graphics vnc \
 --boot cdrom,hd \
---disk path=/home/data/centos7.qcow2,size=10,bus=virtio,format=qcow2
+--disk path=/home/data/centos7-tp.qcow2,size=10,bus=virtio,format=qcow2
 ```
-## CentOS Console
+
+
+## VM Clone
 ```
-# Test only 
-virt-install \
---virt-type=kvm \
---name centos7 \
---vcpus=1 \
---ram 2048 \
---os-variant=centos7.0 \
---cdrom=./CentOS-7-x86_64-Minimal-2009.iso \
---network=bridge=br0,model=virtio \
---graphics none \
---console pty,target_type=serial \
---extra-args 'console=ttyS0,115200n8 serial' \
---disk path=/home/data/centos7.qcow2,size=10,bus=virtio,format=qcow2
+sudo virt-clone --original centos7-tp --name kube-master --file /home/data/kube-master.qcow2
+sudo virt-clone --original centos7-tp --name kube-worker1 --file /home/data/kube-worker1.qcow2
+sudo virt-clone --original centos7-tp --name kube-worker2 --file /home/data/kube-worker2.qcow2
+
+virsh list
 ```
+
 ## Virsh
 ```
-virsh vncdisplay 1
-virsh start centos7
-virsh shutdown centos7
-virsh reboot centos7
-virsh console centos7
-virsh undefine centos7
+# 가상머신 list 
+virsh list
+# 가상머신 시작
+virsh start debian-6.0.10
+# 가상 머신 종료
+virsh shutdown debian-6.0.10
+# 가상 머신 재부팅
+virsh reboot debian-6.0.10
+# 가상 머신 강제 종료
+virsh destroy debian-6.0.10
+# 가상머신 삭제
+virsh undefine --domain debian-6.0.10
+# 가상 머신 저장 -- 스냅샷 가상 머신이 일시 정지후 자동 종료되버림 주의 라이브 아님
+virsh save debian-6.0.10 debian-6.0.10_20200205
+# 가상 머신 복원 -- 복원 후 가상 머신 실행
+virsh restore debian-6.0.10_20200205
+# 가상머신 아미지 파일 삭제 
+rm data/vm/debian-6.0.10.img
+# 가상머신 설정 변경
+virsh edit debian-6.0.10
+# 또는 vi /etc/libvirt/qemu/
+# virsh로 접속해있기 
+virsh
+# Hypervisor 접속하기
+virsh -c qemu:///system
+# 모든 VM 리스트 확인
+virsh list --all
+# 설정 백업
+virsh dumpxml source_vm > .../vm-definition-repository/source_vm.xml
 ```
 
 ## Reference
 - https://pathcre8or.tistory.com/14
 - https://www.cyberciti.biz/faq/how-to-install-kvm-on-centos-7-rhel-7-headless-server/
+- https://teamsmiley.github.io/2020/02/06/KVM/
