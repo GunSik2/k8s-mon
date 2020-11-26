@@ -1,0 +1,35 @@
+# CentOS 7 Repo update
+
+```
+# cd /etc/yum.repos.d
+# vi daum.repo
+
+
+[base]
+name=CentOS-$releasever - Base
+baseurl=http://ftp.daum.net/centos/7/os/$basearch/
+gpgcheck=1
+gpgkey=http://ftp.daum.net/centos/RPM-GPG-KEY-CentOS-7
+ 
+[updates]
+name=CentOS-$releasever - Updates
+baseurl=http://ftp.daum.net/centos/7/updates/$basearch/
+gpgcheck=1
+gpgkey=http://ftp.daum.net/centos/RPM-GPG-KEY-CentOS-7
+ 
+[extras]
+name=CentOS-$releasever - Extras
+baseurl=http://ftp.daum.net/centos/7/extras/$basearch/
+gpgcheck=1
+gpgkey=http://ftp.daum.net/centos/RPM-GPG-KEY-CentOS-7
+
+[centosplus]
+name=CentOS-$releasever - Plus
+baseurl=http://ftp.daum.net/centos/7/centosplus/$basearch/
+gpgcheck=1
+gpgkey=http://ftp.daum.net/centos/RPM-GPG-KEY-CentOS-7
+
+
+# yum clean all
+# yum repolist all
+```
