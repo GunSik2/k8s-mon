@@ -2,6 +2,7 @@
 
 ## 준비 환경
 - A domain to which you or your company owns, to which you can add a DNS record.
+  - gitlab.example.com, registry.example.com and minio.example.com to A record of IP (14.49.100.100)
 - A Kubernetes cluster.
 - A working installation of kubectl.
 - A working installation of Helm v3.
@@ -14,7 +15,8 @@ curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bas
 helm repo add gitlab https://charts.gitlab.io/
 helm install gitlab gitlab/gitlab \
   --set global.hosts.domain=default.14.49.100.100.xip.io  \
-  --set certmanager-issuer.email=gsikchoi@abc.com
+  --set certmanager-issuer.email=gsikchoi@abc.com \
+  --set global.hosts.externalIP=14.49.100.100  
 ```
 
 - 설치 확인
@@ -28,7 +30,7 @@ gitlab-webservice  gitlab.domain.tld     35.239.27.235   80, 443   118m
 
 - 접속 비번 확인
 ```
-$kubectl get secret gitlab-gitlab-initial-root-password -ojsonpath='{.data.password}' | base64 --decode ; echo
+$ kubectl get secret gitlab-gitlab-initial-root-password -ojsonpath='{.data.password}' | base64 --decode ; echo
 ```
 
 - 설정 변경
