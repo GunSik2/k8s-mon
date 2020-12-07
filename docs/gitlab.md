@@ -6,6 +6,8 @@
 - A Kubernetes cluster.
 - A working installation of kubectl.
 - A working installation of Helm v3.
+- 기본 리소스:  8vCPU and 30gb of RAM 
+  - 더 낮은 리소스에서 실행하려면 설정 변경 필요 ([minikube 2vCPU 4G RAM](https://gitlab.com/gitlab-org/charts/gitlab/-/blob/master/examples/values-minikube-minimum.yaml))
 
 ## 설치 절차
 
@@ -42,6 +44,51 @@ redis:
       size: 5Gi
       
 $ helm install gitlab gitlab/gitlab -f gitlab.yaml
+```
+- 최소 설정
+```
+$ cat gitlab.yaml
+USER-SUPPLIED VALUES:
+
+global:
+  hosts:
+    domain: clap.abc.com
+    externalIP: 13.135.178.254
+prometheus:
+  install: false
+gitlab-runner:
+  install: false
+gitlab:
+  webservice:
+    minReplicas: 1
+    maxReplicas: 1
+  sidekiq:
+    minReplicas: 1
+    maxReplicas: 1
+  gitlab-shell:
+    minReplicas: 1
+    maxReplicas: 1
+  gitaly:
+    persistence:
+      storageClass: "nfs-csi"
+      size: 50Gi
+registry:
+  hpa:
+    minReplicas: 1
+    maxReplicas: 1
+postgresql:
+  persistence:
+    storageClass: "nfs-csi"
+    size: 8Gi
+minio:
+  persistence:
+    storageClass: "nfs-csi"
+    size: 10Gi
+redis:
+  master:
+    persistence:
+      storageClass: "nfs-csi"
+      size: 5Gi
 ```
 
 - 설치 확인
