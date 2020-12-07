@@ -11,12 +11,37 @@
 
 - 설치
 ```
-curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
-helm repo add gitlab https://charts.gitlab.io/
-helm install gitlab gitlab/gitlab \
-  --set global.hosts.domain=default.14.49.100.100.xip.io  \
-  --set certmanager-issuer.email=gsikchoi@abc.com \
-  --set global.hosts.externalIP=14.49.100.100  
+$ curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+$ helm repo add gitlab https://charts.gitlab.io/
+
+$ cat gitlab.yaml
+USER-SUPPLIED VALUES:
+certmanager-issuer:
+  email: gsikchoi@abc.com
+global:
+  hosts:
+    domain: clap.abc.com
+    externalIP: 13.135.178.254
+gitlab:
+  gitaly:
+    persistence:
+      storageClass: "nfs-csi"
+      size: 50Gi
+postgresql:
+  persistence:
+    storageClass: "nfs-csi"
+    size: 8Gi
+minio:
+  persistence:
+    storageClass: "nfs-csi"
+    size: 10Gi
+redis:
+  master:
+    persistence:
+      storageClass: "nfs-csi"
+      size: 5Gi
+      
+$ helm install gitlab gitlab/gitlab -f gitlab.yaml
 ```
 
 - 설치 확인
