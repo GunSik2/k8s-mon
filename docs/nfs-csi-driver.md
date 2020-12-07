@@ -15,15 +15,14 @@ csi-nfs-node-dr4s4                        3/3     Running   0          35s     1
 
 ## NFS Server 설치
 ```
-kubectl create -f https://raw.githubusercontent.com/kubernetes-csi/csi-driver-nfs/master/deploy/example/nfs-provisioner/nfs-server.yaml
-kubectl create -f https://raw.githubusercontent.com/kubernetes-csi/csi-driver-nfs/master/deploy/example/nfs-provisioner/nginx-pod.yaml
-kubectl exec nginx-nfs-example -- bash -c "findmnt /var/www -o TARGET,SOURCE,FSTYPE"
+$ kubectl create -f https://raw.githubusercontent.com/kubernetes-csi/csi-driver-nfs/master/deploy/example/nfs-provisioner/nfs-server.yaml
 ```
 
 ## Storage Classs 설치
 ```
 $ kubectl create -f https://raw.githubusercontent.com/kubernetes-csi/csi-driver-nfs/master/deploy/example/storageclass-nfs.yaml
-$ cat https://raw.githubusercontent.com/kubernetes-csi/csi-driver-nfs/master/deploy/example/storageclass-nfs.yaml
+
+$ cat storageclass-nfs.yaml
 ---
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
@@ -31,8 +30,8 @@ metadata:
   name: nfs-csi
 provisioner: nfs.csi.k8s.io
 parameters:
-  server: nfs-server.default.svc.cluster.local
-  share: /
+  server: nfs-server.default.svc.cluster.local    # NFS Server endpoint
+  share: /                                        # NFS share path  
 reclaimPolicy: Retain  # only retain is supported
 volumeBindingMode: Immediate
 mountOptions:
@@ -42,18 +41,7 @@ mountOptions:
 
 ## Driver 테스트
 ```
-$ wget https://raw.githubusercontent.com/kubernetes-csi/csi-driver-nfs/master/deploy/example/nfs-provisioner/nginx-pod.yaml
-
-$ cat nginx-pod.yaml
-  csi:
-    driver: nfs.csi.k8s.io
-    readOnly: false
-    volumeHandle: unique-volumeid  # make sure it's a unique id in the cluster
-    volumeAttributes:
-      server: 127.0.0.1  # NFS Server endpoint
-      share: /           # NFS share path      
-      
-$ kubectl create -f nginx-pod.yaml
+$ kubectl create -f https://raw.githubusercontent.com/kubernetes-csi/csi-driver-nfs/master/deploy/example/nfs-provisioner/nginx-pod.yaml
 $ kubectl exec nginx-nfs-example -- bash -c "findmnt /var/www -o TARGET,SOURCE,FSTYPE"
 TARGET   SOURCE                                 FSTYPE
 /var/www nfs-server.default.svc.cluster.local:/ nfs4
@@ -62,6 +50,8 @@ TARGET   SOURCE                                 FSTYPE
 ## 삭제
 ```
 curl -skSL https://raw.githubusercontent.com/kubernetes-csi/csi-driver-nfs/master/deploy/uninstall-driver.sh | bash -s master --
+kubectl delete -f https://raw.githubusercontent.com/kubernetes-csi/csi-driver-nfs/master/deploy/example/nfs-provisioner/nfs-server.yaml
+kubectl delete -f https://raw.githubusercontent.com/kubernetes-csi/csi-driver-nfs/master/deploy/example/nfs-provisioner/nginx-pod.yaml
 ```
 
 ## 참고자료
