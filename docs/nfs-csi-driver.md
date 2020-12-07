@@ -42,7 +42,23 @@ mountOptions:
 
 ## Driver 테스트
 ```
-$ kubectl create -f https://raw.githubusercontent.com/kubernetes-csi/csi-driver-nfs/master/deploy/example/nfs-provisioner/nginx-pod.yaml
+$ wget https://raw.githubusercontent.com/kubernetes-csi/csi-driver-nfs/master/deploy/example/nfs-provisioner/nginx-pod.yaml
+$ cat nginx-pod.yaml
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: pvc-nginx
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+  #volumeName: pv-nginx         # 제거    
+  storageClassName: "nfs-csi"   # 변경 
+  
+$ kubectl create -f nginx-pod.yaml
 $ kubectl exec nginx-nfs-example -- bash -c "findmnt /var/www -o TARGET,SOURCE,FSTYPE"
 TARGET   SOURCE                                 FSTYPE
 /var/www nfs-server.default.svc.cluster.local:/ nfs4
