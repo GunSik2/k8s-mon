@@ -16,7 +16,18 @@ csi-nfs-node-dr4s4                        3/3     Running   0          35s     1
 
 ## Driver 테스트
 ```
-$ kubectl create -f https://raw.githubusercontent.com/kubernetes-csi/csi-driver-nfs/master/deploy/example/nfs-provisioner/nginx-pod.yaml
+$ wget https://raw.githubusercontent.com/kubernetes-csi/csi-driver-nfs/master/deploy/example/nfs-provisioner/nginx-pod.yaml
+
+$ cat nginx-pod.yaml
+  csi:
+    driver: nfs.csi.k8s.io
+    readOnly: false
+    volumeHandle: unique-volumeid  # make sure it's a unique id in the cluster
+    volumeAttributes:
+      server: nfs-server.default.svc.cluster.local
+      share: /
+      
+$ kubectl create -f nginx-pod.yaml
 $ kubectl exec nginx-nfs-example -- bash -c "findmnt /var/www -o TARGET,SOURCE,FSTYPE"
 TARGET   SOURCE                                 FSTYPE
 /var/www nfs-server.default.svc.cluster.local:/ nfs4
