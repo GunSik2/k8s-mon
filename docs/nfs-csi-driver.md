@@ -15,6 +15,7 @@ csi-nfs-node-dr4s4                        3/3     Running   0          35s     1
 
 ## NFS Server 설치
 ```
+$ sudo mkdir -p /nfs-vol
 $ kubectl create -f https://raw.githubusercontent.com/kubernetes-csi/csi-driver-nfs/master/deploy/example/nfs-provisioner/nfs-server.yaml
 ```
 
@@ -52,6 +53,13 @@ TARGET   SOURCE                                 FSTYPE
 curl -skSL https://raw.githubusercontent.com/kubernetes-csi/csi-driver-nfs/master/deploy/uninstall-driver.sh | bash -s master --
 kubectl delete -f https://raw.githubusercontent.com/kubernetes-csi/csi-driver-nfs/master/deploy/example/nfs-provisioner/nfs-server.yaml
 kubectl delete -f https://raw.githubusercontent.com/kubernetes-csi/csi-driver-nfs/master/deploy/example/nfs-provisioner/nginx-pod.yaml
+```
+
+## PVC 강제 삭제
+```
+kubectl  delete pvc redis-data-gitlab-redis-master-0 --grace-period=0 --force
+kubectl  patch pvc gitlab-prometheus-server -p '{"metadata":{"finalizers":null}}'
+kubectl  delete pvc gitlab-prometheus-server --grace-period=0 --force
 ```
 
 ## 참고자료
