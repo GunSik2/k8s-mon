@@ -24,8 +24,8 @@ $ cat nginx-pod.yaml
     readOnly: false
     volumeHandle: unique-volumeid  # make sure it's a unique id in the cluster
     volumeAttributes:
-      server: nfs-server.default.svc.cluster.local
-      share: /
+      server: 127.0.0.1  # NFS Server endpoint
+      share: /           # NFS share path      
       
 $ kubectl create -f nginx-pod.yaml
 $ kubectl exec nginx-nfs-example -- bash -c "findmnt /var/www -o TARGET,SOURCE,FSTYPE"
