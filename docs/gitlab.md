@@ -45,6 +45,46 @@ redis:
       
 $ helm install gitlab gitlab/gitlab -f gitlab.yaml
 ```
+
+- 설치 확인
+```
+$ kubectl get ingress -lrelease=gitlab  
+NAME               HOSTS                 ADDRESS         PORTS     AGE
+gitlab-minio       minio.domain.tld      35.239.27.235   80, 443   118m
+gitlab-registry    registry.domain.tld   35.239.27.235   80, 443   118m
+gitlab-webservice  gitlab.domain.tld     35.239.27.235   80, 443   118m
+```
+
+- 접속 비번 확인
+```
+$ kubectl get secret gitlab-gitlab-initial-root-password -ojsonpath='{.data.password}' | base64 --decode ; echo
+```
+
+- 설정 변경
+```
+$ helm get values gitlab > gitlab.yaml
+
+$ cat gitlab.yaml #변경
+USER-SUPPLIED VALUES:
+certmanager-issuer:
+  email: gsikchoi@crossent.com
+global:
+  hosts:
+    domain: default.14.49.100.100.xip.io
+    https: false
+    registry:
+      servicePort: 8888
+    minio:
+      servicePort: 8888
+
+$ helm upgrade gitlab gitlab/gitlab -f gitlab.yaml
+```
+
+- 삭제
+```
+helm uninstall gitlab
+```
+
 - 최소 설정
 ```
 $ cat gitlab.yaml
@@ -89,45 +129,6 @@ redis:
     persistence:
       storageClass: "nfs-csi"
       size: 5Gi
-```
-
-- 설치 확인
-```
-$ kubectl get ingress -lrelease=gitlab  
-NAME               HOSTS                 ADDRESS         PORTS     AGE
-gitlab-minio       minio.domain.tld      35.239.27.235   80, 443   118m
-gitlab-registry    registry.domain.tld   35.239.27.235   80, 443   118m
-gitlab-webservice  gitlab.domain.tld     35.239.27.235   80, 443   118m
-```
-
-- 접속 비번 확인
-```
-$ kubectl get secret gitlab-gitlab-initial-root-password -ojsonpath='{.data.password}' | base64 --decode ; echo
-```
-
-- 설정 변경
-```
-$ helm get values gitlab > gitlab.yaml
-
-$ cat gitlab.yaml #변경
-USER-SUPPLIED VALUES:
-certmanager-issuer:
-  email: gsikchoi@crossent.com
-global:
-  hosts:
-    domain: default.14.49.100.100.xip.io
-    https: false
-    registry:
-      servicePort: 8888
-    minio:
-      servicePort: 8888
-
-$ helm upgrade gitlab gitlab/gitlab -f gitlab.yaml
-```
-
-- 삭제
-```
-helm uninstall gitlab
 ```
 
 
