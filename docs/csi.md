@@ -30,7 +30,7 @@ K8S 제공하는 사이드 카인 "K8S to CSI" 프록시 컨테이너가 K8S API
 볼륨 컴포넌트는 CSI 볼륨 플러그인 조작(provisioning/deleting, attaching/detaching, mounting/unmounting)을 위한 라이프사이클을 처리한다.  
 
 ## 수행 절차
-## 볼륨 생성
+### 볼륨 생성
 - 어드민이 StorageClass 를 생성, 외부 배포용 CSI 드라이버와 CSI 드라이버와 파라미터 포함
 - 사용자가 StorageClass 참조한 PersistentVolumeClaim 를 생성
 - PV 컨트롤러가 volume.beta.kubernetes.io/storage-provisioner 어노테이션과 PVC를 표시
@@ -39,18 +39,20 @@ K8S 제공하는 사이드 카인 "K8S to CSI" 프록시 컨테이너가 K8S API
 - 볼륨 생성 후, 외부 배포용 CSI 드라이버가 PersistentVolume 개체 만들고, PersistentVolumeClaim 과 바인딩한다
 
 
-## 볼륨 삭제
+### 볼륨 삭제
 - 사용자가 PersistentVolumeClaim 개체를 삭제
 - 외부 배포용 CSI 드라이버가 PersistentVolumeClaim 삭제를 확인 후 보유 정책을 호출:
 - 보유 정책이 "삭제"인 경우, DeleteVolume 과 PersistentVolume 개체 삭제를 호출
 - 보유 정책이 "유지"인 경우, PersistentVolume 개체를 삭제하지 않음
 
-## 볼륨 연결
+### 볼륨 연결
 - K8S 마스터의 kube-controller-manager 바이너리 내에 있는 attach/detach 컨트롤러가 CSI 볼륨 플러그인 참조 Pod 가 노드에 스케쥴된 걸 확인하고, 내부 CSI 볼륨 플러그인의 attach 함수를 호출
 - 내부 볼륨 플러그인은 K8S의 VolumeAttachment 개체를 생성하고 완료되길 대기
 - 외부 attacher 컴포넌트가 VolumeAttachment 개체를 보고 CSI 볼륨드라이버에 ControllerPublish 함수를 호출(grpc 호출)   
 - 외부 attacher 컴포넌트가 ControllerPublish 정상 처리 후, VolumeAttachment 개체 값을 업데이트 
    
+### CSI 일반 모델
+![](https://github.com/kubernetes/community/blob/master/contributors/design-proposals/storage/container-storage-interface_diagram1.png?raw=true)
 
 # 참고자료
 - https://kubernetes-csi.github.io/docs/introduction.html
